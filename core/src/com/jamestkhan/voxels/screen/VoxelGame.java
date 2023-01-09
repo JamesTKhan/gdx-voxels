@@ -19,6 +19,8 @@ import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.jamestkhan.voxels.voxels.PerlinNoiseGenerator;
+import com.jamestkhan.voxels.voxels.VoxelMode;
+import com.jamestkhan.voxels.voxels.VoxelSettings;
 import com.jamestkhan.voxels.voxels.VoxelWorld;
 
 /**
@@ -59,7 +61,11 @@ public class VoxelGame extends ScreenAdapter {
         TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
 
         MathUtils.random.setSeed(0);
-        voxelWorld = new VoxelWorld(camera, tiles[0], 20, 4, 20);
+
+        VoxelSettings voxelSettings = new VoxelSettings();
+        voxelSettings.setVoxelMode(VoxelMode.VERTEX_COLOR);
+
+        voxelWorld = new VoxelWorld(camera, tiles[0], voxelSettings);
         PerlinNoiseGenerator.generateVoxels(voxelWorld, 0, 63, 10);
         float camX = voxelWorld.voxelsX / 2f;
         float camZ = voxelWorld.voxelsZ / 2f;

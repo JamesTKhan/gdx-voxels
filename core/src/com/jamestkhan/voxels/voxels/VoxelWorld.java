@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -38,6 +39,7 @@ public class VoxelWorld implements RenderableProvider {
 	public final boolean[] dirty;
 	public final int[] numVertices;
 	private final PerspectiveCamera camera;
+	private final VoxelSettings settings;
 	public float[] vertices;
 	public final int chunksX;
 	public final int chunksY;
@@ -52,22 +54,35 @@ public class VoxelWorld implements RenderableProvider {
 	private static final Vector3 chunkDimensions = new Vector3(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z);
 	private static final int chunkHalfDimension = CHUNK_SIZE_X / 2;
 
-	public VoxelWorld (PerspectiveCamera camera, TextureRegion[] tiles, int chunksX, int chunksY, int chunksZ) {
+	public VoxelWorld (PerspectiveCamera camera, TextureRegion[] tiles, VoxelSettings settings) {
 		this.tiles = tiles;
 		this.camera = camera;
+		this.settings = settings;
+		this.chunksX = settings.getChunksX();
+		this.chunksY = settings.getChunksY();
+		this.chunksZ = settings.getChunksZ();
 		this.chunks = new VoxelChunk[chunksX * chunksY * chunksZ];
-		this.chunksX = chunksX;
-		this.chunksY = chunksY;
-		this.chunksZ = chunksZ;
 		this.numChunks = chunksX * chunksY * chunksZ;
 		this.voxelsX = chunksX * CHUNK_SIZE_X;
 		this.voxelsY = chunksY * CHUNK_SIZE_Y;
 		this.voxelsZ = chunksZ * CHUNK_SIZE_Z;
+
+		// Build out VertexAttributes
+		Array<VertexAttribute> attributeArray = new Array<>();
+		attributeArray.add(VertexAttribute.Position());
+		attributeArray.add(VertexAttribute.Normal());
+		if (settings.getVoxelMode() == VoxelMode.VERTEX_COLOR) {
+			attributeArray.add(settings.isUsePackedColors() ? VertexAttribute.ColorPacked() : VertexAttribute.ColorUnpacked());
+		}
+		VertexAttributes vertexAttributes = new VertexAttributes(attributeArray.toArray(VertexAttribute.class));
+		settings.setVertexSize(vertexAttributes.vertexSize / 4);
+
+
 		int i = 0;
 		for (int y = 0; y < chunksY; y++) {
 			for (int z = 0; z < chunksZ; z++) {
 				for (int x = 0; x < chunksX; x++) {
-					VoxelChunk chunk = new VoxelChunk(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z);
+					VoxelChunk chunk = new VoxelChunk(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z, settings);
 					chunk.offset.set(x * CHUNK_SIZE_X, y * CHUNK_SIZE_Y, z * CHUNK_SIZE_Z);
 					chunks[i++] = chunk;
 				}
@@ -87,7 +102,7 @@ public class VoxelWorld implements RenderableProvider {
 		this.meshes = new Mesh[chunksX * chunksY * chunksZ];
 		for (i = 0; i < meshes.length; i++) {
 			meshes[i] = new Mesh(true, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 6 * 4,
-				CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal());
+				CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z * 36 / 3, vertexAttributes);
 			meshes[i].setIndices(indices);
 		}
 		this.dirty = new boolean[chunksX * chunksY * chunksZ];
@@ -98,11 +113,18 @@ public class VoxelWorld implements RenderableProvider {
 		for (i = 0; i < numVertices.length; i++)
 			numVertices[i] = 0;
 
-		this.vertices = new float[VoxelChunk.VERTEX_SIZE * 6 * CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z];
+		this.vertices = new float[settings.getVertexSize() * 6 * CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z];
 		this.materials = new Material[chunksX * chunksY * chunksZ];
 		for (i = 0; i < materials.length; i++) {
-			materials[i] = new Material(new ColorAttribute(ColorAttribute.Diffuse, MathUtils.random(0.5f, 1f),
-				MathUtils.random(0.5f, 1f), MathUtils.random(0.5f, 1f), 1));
+			switch (settings.getVoxelMode()) {
+				case MATERIAL_COLOR:
+					materials[i] = new Material(new ColorAttribute(ColorAttribute.Diffuse, MathUtils.random(0.5f, 1f),
+							MathUtils.random(0.5f, 1f), MathUtils.random(0.5f, 1f), 1));
+					break;
+				case VERTEX_COLOR:
+					materials[i] = new Material();
+					break;
+			}
 		}
 	}
 
@@ -194,7 +216,7 @@ public class VoxelWorld implements RenderableProvider {
 			if (dirty[i]) {
 				int numVerts = chunk.calculateVertices(vertices);
 				numVertices[i] = numVerts / 4 * 6;
-				mesh.setVertices(vertices, 0, numVerts * VoxelChunk.VERTEX_SIZE);
+				mesh.setVertices(vertices, 0, numVerts * settings.getVertexSize());
 				dirty[i] = false;
 			}
 			if (numVertices[i] == 0) continue;
