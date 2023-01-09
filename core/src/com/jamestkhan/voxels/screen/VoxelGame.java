@@ -2,6 +2,7 @@ package com.jamestkhan.voxels.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,6 +49,8 @@ public class VoxelGame extends ScreenAdapter {
         controller = new FirstPersonCameraController(camera);
         Gdx.input.setInputProcessor(controller);
 
+        font.setColor(Color.BLACK);
+
         lights = new Environment();
         lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
         lights.add(new DirectionalLight().set(1, 1, 1, 0, -1, 0));
@@ -56,7 +59,7 @@ public class VoxelGame extends ScreenAdapter {
         TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
 
         MathUtils.random.setSeed(0);
-        voxelWorld = new VoxelWorld(tiles[0], 20, 4, 20);
+        voxelWorld = new VoxelWorld(camera, tiles[0], 20, 4, 20);
         PerlinNoiseGenerator.generateVoxels(voxelWorld, 0, 63, 10);
         float camX = voxelWorld.voxelsX / 2f;
         float camZ = voxelWorld.voxelsZ / 2f;

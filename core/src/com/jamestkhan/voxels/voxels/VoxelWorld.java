@@ -15,6 +15,7 @@ package com.jamestkhan.voxels.voxels;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -35,6 +37,7 @@ public class VoxelWorld implements RenderableProvider {
 	public final Material[] materials;
 	public final boolean[] dirty;
 	public final int[] numVertices;
+	private final PerspectiveCamera camera;
 	public float[] vertices;
 	public final int chunksX;
 	public final int chunksY;
@@ -45,9 +48,13 @@ public class VoxelWorld implements RenderableProvider {
 	public int renderedChunks;
 	public int numChunks;
 	private final TextureRegion[] tiles;
+	private static final Vector3 chunkCenter = new Vector3();
+	private static final Vector3 chunkDimensions = new Vector3(CHUNK_SIZE_X, CHUNK_SIZE_Y, CHUNK_SIZE_Z);
+	private static final int chunkHalfDimension = CHUNK_SIZE_X / 2;
 
-	public VoxelWorld (TextureRegion[] tiles, int chunksX, int chunksY, int chunksZ) {
+	public VoxelWorld (PerspectiveCamera camera, TextureRegion[] tiles, int chunksX, int chunksY, int chunksZ) {
 		this.tiles = tiles;
+		this.camera = camera;
 		this.chunks = new VoxelChunk[chunksX * chunksY * chunksZ];
 		this.chunksX = chunksX;
 		this.chunksY = chunksY;
@@ -181,6 +188,9 @@ public class VoxelWorld implements RenderableProvider {
 		for (int i = 0; i < chunks.length; i++) {
 			VoxelChunk chunk = chunks[i];
 			Mesh mesh = meshes[i];
+
+			if (!isChunkVisible(chunk)) continue;
+
 			if (dirty[i]) {
 				int numVerts = chunk.calculateVertices(vertices);
 				numVertices[i] = numVerts / 4 * 6;
@@ -197,5 +207,10 @@ public class VoxelWorld implements RenderableProvider {
 			renderables.add(renderable);
 			renderedChunks++;
 		}
+	}
+
+	private boolean isChunkVisible(VoxelChunk chunk) {
+		chunkCenter.set(chunk.offset.x + chunkHalfDimension, chunk.offset.y + chunkHalfDimension, chunk.offset.z + chunkHalfDimension);
+		return camera.frustum.boundsInFrustum(chunkCenter, chunkDimensions);
 	}
 }
