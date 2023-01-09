@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -35,8 +36,12 @@ public class VoxelGame extends ScreenAdapter {
     public VoxelGame () {
         spriteBatch = new SpriteBatch();
         font = new BitmapFont();
-        modelBatch = new ModelBatch();
-        DefaultShader.defaultCullFace = GL20.GL_FRONT;
+
+        DefaultShader.Config config = new DefaultShader.Config();
+        config.defaultCullFace = GL20.GL_FRONT;
+        DefaultShaderProvider provider = new DefaultShaderProvider(config);
+        modelBatch = new ModelBatch(provider);
+
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.near = 0.5f;
         camera.far = 1000;
@@ -61,7 +66,7 @@ public class VoxelGame extends ScreenAdapter {
 
     @Override
     public void render (float delta) {
-        ScreenUtils.clear(0.4f, 0.4f, 0.4f, 1f, true);
+        ScreenUtils.clear(0.0f, 0.3f, 0.6f, 1f, true);
         modelBatch.begin(camera);
         modelBatch.render(voxelWorld, lights);
         modelBatch.end();

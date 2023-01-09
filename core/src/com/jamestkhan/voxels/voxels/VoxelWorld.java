@@ -1,12 +1,9 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,12 +70,12 @@ public class VoxelWorld implements RenderableProvider {
 		short[] indices = new short[len];
 		short j = 0;
 		for (i = 0; i < len; i += 6, j += 4) {
-			indices[i + 0] = (short)(j + 0);
+			indices[i] = j;
 			indices[i + 1] = (short)(j + 1);
 			indices[i + 2] = (short)(j + 2);
 			indices[i + 3] = (short)(j + 2);
 			indices[i + 4] = (short)(j + 3);
-			indices[i + 5] = (short)(j + 0);
+			indices[i + 5] = j;
 		}
 		this.meshes = new Mesh[chunksX * chunksY * chunksZ];
 		for (i = 0; i < meshes.length; i++) {
