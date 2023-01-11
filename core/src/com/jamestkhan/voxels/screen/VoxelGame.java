@@ -3,7 +3,6 @@ package com.jamestkhan.voxels.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,9 +39,7 @@ public class VoxelGame extends ScreenAdapter {
         spriteBatch = new SpriteBatch();
         font = new BitmapFont();
 
-        DefaultShader.Config config = new DefaultShader.Config();
-        config.defaultCullFace = GL20.GL_FRONT;
-        DefaultShaderProvider provider = new DefaultShaderProvider(config);
+        DefaultShaderProvider provider = new DefaultShaderProvider();
         modelBatch = new ModelBatch(provider);
 
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

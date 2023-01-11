@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -127,6 +127,16 @@ public class VoxelChunk {
 	}
 
 	public int createTop (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
+		// Top Right
+		vertices[vertexOffset++] = offset.x + x + 1;
+		vertices[vertexOffset++] = offset.y + y + 1;
+		vertices[vertexOffset++] = offset.z + z;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 1;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Top Left
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
@@ -135,15 +145,8 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
-		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y + 1;
-		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 1;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x + 1;
+		// Bottom Left
+		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = 0;
@@ -151,7 +154,8 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
-		vertices[vertexOffset++] = offset.x + x;
+		// Bottom Right
+		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = 0;
@@ -162,6 +166,7 @@ public class VoxelChunk {
 	}
 
 	public int createBottom (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
+		// Top Right
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
@@ -170,25 +175,28 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
-		vertices[vertexOffset++] = offset.x + x;
-		vertices[vertexOffset++] = offset.y + y;
-		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = -1;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y;
-		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = -1;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
+		// Top Left
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = -1;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Left
+		vertices[vertexOffset++] = offset.x + x + 1;
+		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.z + z + 1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = -1;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Right
+		vertices[vertexOffset++] = offset.x + x;
+		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
@@ -197,22 +205,7 @@ public class VoxelChunk {
 	}
 
 	public int createLeft (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
-		vertices[vertexOffset++] = offset.x + x;
-		vertices[vertexOffset++] = offset.y + y;
-		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = -1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x;
-		vertices[vertexOffset++] = offset.y + y + 1;
-		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = -1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
+		// Top Right
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
@@ -221,6 +214,25 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
+		// Top Left
+		vertices[vertexOffset++] = offset.x + x;
+		vertices[vertexOffset++] = offset.y + y + 1;
+		vertices[vertexOffset++] = offset.z + z;
+		vertices[vertexOffset++] = -1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Left
+		vertices[vertexOffset++] = offset.x + x;
+		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.z + z;
+		vertices[vertexOffset++] = -1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Right
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
@@ -232,14 +244,25 @@ public class VoxelChunk {
 	}
 
 	public int createRight (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
+		// Top Right
 		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
+		// Top Left
+		vertices[vertexOffset++] = offset.x + x + 1;
+		vertices[vertexOffset++] = offset.y + y + 1;
+		vertices[vertexOffset++] = offset.z + z + 1;
+		vertices[vertexOffset++] = 1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Left
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
@@ -248,16 +271,9 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 0;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
+		// Bottom Right
 		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y + 1;
-		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = 1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y + 1;
+		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
@@ -267,6 +283,16 @@ public class VoxelChunk {
 	}
 
 	public int createFront (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
+		// Bottom Right
+		vertices[vertexOffset++] = offset.x + x + 1;
+		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.z + z;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 1;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Left
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
@@ -275,15 +301,8 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 1;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
-		vertices[vertexOffset++] = offset.x + x + 1;
-		vertices[vertexOffset++] = offset.y + y;
-		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 1;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x + 1;
+		// Top Left
+		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = 0;
@@ -291,7 +310,8 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = 1;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
-		vertices[vertexOffset++] = offset.x + x;
+		// Top Right
+		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = 0;
@@ -302,22 +322,7 @@ public class VoxelChunk {
 	}
 
 	public int createBack (Vector3 offset, int x, int y, int z, float[] vertices, int vertexOffset) {
-		vertices[vertexOffset++] = offset.x + x;
-		vertices[vertexOffset++] = offset.y + y;
-		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = -1;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
-		vertices[vertexOffset++] = offset.x + x;
-		vertices[vertexOffset++] = offset.y + y + 1;
-		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = 0;
-		vertices[vertexOffset++] = -1;
-		vertexOffset += addColorToVertices(vertices, vertexOffset);
-
+		// Top Right
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
@@ -326,6 +331,25 @@ public class VoxelChunk {
 		vertices[vertexOffset++] = -1;
 		vertexOffset += addColorToVertices(vertices, vertexOffset);
 
+		// Top Left
+		vertices[vertexOffset++] = offset.x + x;
+		vertices[vertexOffset++] = offset.y + y + 1;
+		vertices[vertexOffset++] = offset.z + z + 1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = -1;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Left
+		vertices[vertexOffset++] = offset.x + x;
+		vertices[vertexOffset++] = offset.y + y;
+		vertices[vertexOffset++] = offset.z + z + 1;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = 0;
+		vertices[vertexOffset++] = -1;
+		vertexOffset += addColorToVertices(vertices, vertexOffset);
+
+		// Bottom Right
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
